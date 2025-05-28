@@ -1,0 +1,11 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define AP_SSID "ESP-CONFIG"
+#define AP_PASS ""
+#define WIFI_STORAGE_NAMESPACE "wifi_config"
+
+#define IO_USERNAME  ""
+#define IO_KEY       ""
+
+#endif // CONFIG_H
