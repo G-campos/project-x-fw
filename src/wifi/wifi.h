@@ -5,8 +5,7 @@
 #include <ArduinoJson.h>
 
 void wifi_init();
-void wifi_connect(const char* ssid, const char* password);
-void wifi_start_ap();
+void wifi_loop();
 DynamicJsonDocument list_wifi_ssid();
 
 #endif // WIFI_MANAGER_H
