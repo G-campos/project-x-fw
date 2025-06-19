@@ -130,12 +130,15 @@
     <div class="container">
         <h2>Configuração WiFi</h2>
         <div name="myForm">
-            <div class="field-group">
+            <!-- <div class="field-group">
                 <select class='text-field' name='ssid'></select>
+            </div> -->
+            <div class="field-group">
+                <input class='text-field' id='ssid' length=64 placeholder="SSID"></input>
             </div>
             <br>
             <div class="field-group">
-                <input class="text-field" type="password" name="password" length=64 placeholder="Password">
+                <input class="text-field" type="password" id="password" length=64 placeholder="Password">
             </div>
             <br>
             <div id="statusDiv">
@@ -147,64 +150,73 @@
         </div>
     </div>
     <script>
+        const dev = true;
+
+        const host = dev ? "http://192.168.4.1" : '';
+
+
+        let statusDiv = document.getElementById("statusDiv");
+        let ssidInput = document.getElementById('ssid');
+        let passwordInput = document.getElementById('password');
+
         async function sendConfig() {
-            let ssid = document.getElementById('ssid').value;
-            let password = document.getElementById('password').value;
-            await fetch('/config', {
+            const ssid = ssidInput.value();
+            const password = passwordInput.value();
+
+            await fetch(host + '/config', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ssid, password })
             })
                 .then(response => response.json())
-                .then(data => document.getElementById('statusDiv').innerText = "<p id='status'>" + (data.status || data.error) + "</p>")
+                .then(data => statusDiv.innerHTML = "<p id='status'>" + (data.status || data.error) + "</p>")
                 .catch(error => console.error('Erro:', error));
         }
 
         function validateForm() {
-            let ssid = document.getElementById('ssid').value;
-            let password = document.getElementById('password').value;
-            const status = document.getElementById("statusDiv");
             if (ssid == "" && password == "") {
-                status.innerHTML = "<p id='status' style='color:red;'>Insira SSID e senha.</p>";
+                statusDiv.innerHTML = "<p id='status' style='color:red;'>Insira SSID e senha.</p>";
                 return false;
             }
             else if (ssid == "") {
-                status.innerHTML = "<p id='status' style='color:red;'>Insira SSID.</p>";
+                statusDiv.innerHTML = "<p id='status' style='color:red;'>Insira SSID.</p>";
                 return false;
             }
             else if (password == "") {
-                status.innerHTML = "<p id='status' style='color:red;'>Insira senha.</p>";
+                statusDiv.innerHTML = "<p id='status' style='color:red;'>Insira senha.</p>";
                 return false;
             }
             else {
-                status.innerHTML = "<p id='status'>Conectando...</p>";
+                statusDiv.innerHTML = "<p id='status'>Conectando...</p>";
                 sendConfig()
                 return true;
             }
         }
 
-        async function getWifiScanResult() {
-            await fetch('/scan', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-            })
-                .then(response => response.json())
-                .then((data) => {
-                    let selectTag = document.getElementsByName('ssid')
-                    if (data.leght) {
-                        data.forEach(element => {
-                            selectTag.innerHTML += `<option value='${element.ssid}'>${element.ssid}</option>`
-                        });
-                    } else {
-                        selectTag.innerHTML = "<option value='' disabled selected>Nenhuma rede encontrada</option>"
-                    }
+        // async function getWifiScanResult() {
+        //     status.innerHTML = "<p id='status'>Buscando redes...</p>"
 
-                })
-                .catch((error) => {
-                    console.error('Erro:', error)
-                    document.getElementById("statusDiv").innerHTML = "<p id='status'>Erro ao buscar redes de wifi</p>"
-                });
-        }
+        //     await fetch(host + '/scan', {
+        //         method: 'GET',
+        //         headers: { 'Content-Type': 'application/json' },
+        //     })
+        //         .then(response => response.json())
+        //         .then((data) => {
+        //             let selectTag = document.getElementsByName('ssid')
+        //             if (data.leght) {
+        //                 data.forEach(element => {
+        //                     selectTag.innerHTML += `<option value='${element}'>${element}</option>`
+        //                 });
+        //             } else {
+        //                 selectTag.innerHTML = "<option value='' disabled selected>Nenhuma rede encontrada</option>"
+        //             }
+
+        //         })
+        //         .catch((error) => {
+        //             console.error('Erro:', error)
+        //             status.innerHTML = "<p id='status'>Erro ao buscar redes de wifi</p>"
+        //         });
+        // }
     </script>
 </body>
 
