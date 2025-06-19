@@ -1,107 +1,149 @@
 #include "display.h"
+
+#include "config.h"
+
 #include <SPI.h>
 #include <TFT_eSPI.h>
-#include <XPT2046_Touchscreen.h>
-// #include <lvgl.h>
+#include <PushButton.h>
+
+// enum rotation {
+//   LANDSCAPE,
+//   RIGHT_PORTRAIT,
+//   LEFT_PORTRAIT,
+//   INVERTED_LANDSCAPE
+// };
+
+// uint8_t rotation = LANDSCAPE;
 
 TFT_eSPI tft = TFT_eSPI();
-
-// Touchscreen pins
-#define XPT2046_IRQ 36   // T_IRQ
-#define XPT2046_MOSI 32  // T_DIN
-#define XPT2046_MISO 39  // T_OUT
-#define XPT2046_CLK 25   // T_CLK
-#define XPT2046_CS 33    // T_CS
-#define TOUCH_CS 
-
-SPIClass touchscreenSPI = SPIClass(VSPI);
-XPT2046_Touchscreen touchscreen(XPT2046_CS, XPT2046_IRQ);
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
 #define FONT_SIZE 2
 
-// #define DISPLAY_HORIZOTAL 0
-// #define DISPLAY_HORIZOTAL_INVERTIDO 1
-// #define DISPLAY_VERTICAL 2
-// #define DISPLAY_VERTICAL_INVERTIDO 3
+PushButton bot1(35);
+PushButton bot2(34);
+PushButton bot3(39);
 
-// Touchscreen coordinates: (x, y) and pressure (z)
-int x, y, z;
+static long corBot[3] = {OFF, OFF, OFF};
 
-// Print Touchscreen info about X, Y and Pressure (Z) on the Serial Monitor
-void printTouchToSerial(int touchX, int touchY, int touchZ) {
-  Serial.print("X = ");
-  Serial.print(touchX);
-  Serial.print(" | Y = ");
-  Serial.print(touchY);
-  Serial.print(" | Pressure = ");
-  Serial.print(touchZ);
-  Serial.println();
-}
-
-// Print Touchscreen info about X, Y and Pressure (Z) on the TFT Display
-void printTouchToDisplay(int touchX, int touchY, int touchZ) {
-  // Clear TFT screen
-  tft.fillScreen(TFT_WHITE);
-  tft.setTextColor(TFT_BLACK, TFT_WHITE);
-
-  int centerX = SCREEN_WIDTH / 2;
-  int textY = 80;
- 
-  String tempText = "X = " + String(touchX);
-  tft.drawCentreString(tempText, centerX, textY, FONT_SIZE);
-
-  textY += 20;
-  tempText = "Y = " + String(touchY);
-  tft.drawCentreString(tempText, centerX, textY, FONT_SIZE);
-
-  textY += 20;
-  tempText = "Pressure = " + String(touchZ);
-  tft.drawCentreString(tempText, centerX, textY, FONT_SIZE);
-}
-
-void display_init() {
-  // Start the SPI for the touchscreen and init the touchscreen
-  touchscreenSPI.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
-//   touchscreen.begin(touchscreenSPI);
-  touchscreen.begin();
-
-
-  // Set the Touchscreen rotation in landscape mode
-  // Note: in some displays, the touchscreen might be upside down, so you might need to set the rotation to 3: touchscreen.setRotation(3);
-  touchscreen.setRotation(2);
-
-  // Start the tft display
-  tft.init();
-  // Set the TFT display rotation in landscape mode
-  tft.setRotation(2);
-
-  // Clear the screen before writing to it
-  tft.fillScreen(TFT_WHITE);
-  tft.setTextColor(TFT_BLACK, TFT_WHITE);
+void intro_screen() {
   
-  // Set X and Y coordinates for center of display
-  int centerX = SCREEN_WIDTH / 2;
-  int centerY = SCREEN_HEIGHT / 2;
+  tft.setCursor (55, 80);
+  tft.setTextSize (3);
+  tft.setTextColor(WHITE);
+  tft.println("MENU");
+  
+  tft.setCursor (30, 120);
+  tft.println("COM ARDUINO");
+  
+  tft.setCursor (30, 180);
+  tft.setTextSize (2);
+  tft.setTextColor(BLUE);
+  tft.println("Brincando");
 
-  tft.drawCentreString("Hello, world!", centerX, 30, FONT_SIZE);
-  tft.drawCentreString("Touch screen to test", centerX, centerY, FONT_SIZE);
+  tft.setCursor (30, 200);
+  tft.setTextColor(WHITE);
+  tft.println("    com");
+  
+  tft.setCursor (30, 220);
+  tft.setTextColor(RED);
+  tft.println("       Ideias");
+  
+  delay(3500);
+
+  tft.fillScreen(BLACK);
 }
 
-void display_loop() {
-  // Checks if Touchscreen was touched, and prints X, Y and Pressure (Z) info on the TFT display and Serial Monitor
-  if (touchscreen.tirqTouched() && touchscreen.touched()) {
-    // Get Touchscreen points
-    TS_Point p = touchscreen.getPoint();
-    // Calibrate Touchscreen points with map function to the correct width and height
-    x = map(p.x, 200, 3700, 1, SCREEN_WIDTH);
-    y = map(p.y, 240, 3800, 1, SCREEN_HEIGHT);
-    z = p.z;
+void draw_buttons(int type) {
+  switch (type) {
+    case 1:
+      tft.fillRect  (40, 20 , 160, 80, corBot[0]);
 
-    printTouchToSerial(x, y, z);
-    printTouchToDisplay(x, y, z);
+      tft.setTextColor(BLACK);
+      tft.setTextSize (3);
+      tft.setCursor(50, 50);
+      tft.println(" QUARTO");
+      break;
 
-    delay(1000);
+    case 2:
+      tft.fillRect  (40, 120, 160, 80, corBot[1]);
+
+      tft.setTextColor(BLACK);
+      tft.setTextSize (3);
+      tft.setCursor(50, 150);
+      tft.println("  SALA ");
+      break;
+
+    case 3:
+      tft.fillRect  (40, 220, 160, 80, corBot[2]);
+
+      tft.setTextColor(BLACK);
+      tft.setTextSize (3);
+      tft.setCursor(60, 250);
+      tft.println("COZINHA");
+      break;
+
+    default:
+      tft.fillRect  (40, 20 , 160, 80, corBot[0]);
+      tft.fillRect  (40, 120, 160, 80, corBot[1]);
+      tft.fillRect  (40, 220, 160, 80, corBot[2]);
+
+      tft.setTextColor(BLACK);
+      tft.setTextSize (3);
+
+      tft.setCursor(50, 50);
+      tft.println(" QUARTO");
+
+      tft.setCursor(50, 150);
+      tft.println("  SALA ");
+
+      tft.setCursor(60, 250);
+      tft.println("COZINHA");
   }
+
+}
+
+void DetectButtons() {
+  const char* TAG = "detect_buttons";
+
+  if (bot1.pressed()) { // LOGICA PARA O BOTAO 1
+    logger.info(TAG, "Button 1 pressionado");
+    if (corBot[0] == ON) corBot[0] = OFF;
+    else corBot[0] = ON;
+    draw_buttons(1);
+  } 
+  
+  if (bot2.pressed()) { // LOGICA PARA O BOTAO 2
+    logger.info(TAG, "Button 2 pressionado");
+    if (corBot[1] == ON) corBot[1] = OFF;
+    else corBot[1] = ON;
+    draw_buttons(2);
+  }
+  
+  if (bot3.pressed()) { // LOGICA PARA O BOTAO 3
+    logger.info(TAG, "Button 3 pressionado");
+    if (corBot[2] == ON) corBot[2] = OFF;
+    else corBot[2] = ON;
+    draw_buttons(3);
+  }
+
+}
+
+void display_init(){
+  const char* TAG = "display_init";
+  logger.info(TAG, "Inicializando o display...");
+  
+  tft.init();
+  tft.setRotation(3); // 0-3
+  tft.fillScreen(TFT_BLACK);
+
+  intro_screen();
+  draw_buttons(0);
+
+  logger.info(TAG, "Display inicializado.");
+}
+
+void display_loop(){
+  DetectButtons();
 }
