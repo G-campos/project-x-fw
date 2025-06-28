@@ -4,14 +4,13 @@
 #include <PubSubClient.h>
 #include "config.h"
 
-// ThingsBoard server (use local IP)
-const char* mqtt_server = ""; // Change to your actual IP
+const char* mqtt_server = ""; 
 const int mqtt_port = 1883;
 const char* token = "";  // From ThingsBoard device
 
 // Variáveis globais
 WiFiClient wifiClient;
-PubSubClient client(wifiClient);              // agora compartilhada entre as funções
+PubSubClient client(wifiClient);
 unsigned long lastSend = 0;
 
 void mqtt_init() {
