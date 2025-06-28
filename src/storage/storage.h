@@ -3,13 +3,26 @@
 
 #include <Arduino.h>
 #include <SPIFFS.h>
+#include <ArduinoJson.h>
 
 #define FILESYSTEM SPIFFS
+#define CONFIG_FILE "/configs.json"
 
-// void html_load();
+struct Config {
+  String device_id;
+  String ssid;
+  String password;
+  String server_http_url;
+  String server_mqtt_url;
+  String api_key;
+  uint32_t interval_ms;
+  String format;
+};
+
 void list_partitions();
 void storage_init();
-bool storage_load_wifi(String &ssid, String &password);
-bool storage_save_wifi(const String &ssid, const String &password);
+bool storage_load_config(Config &config);
+bool storage_save_config(Config &config);
+void storage_clear();
 
 #endif // STORAGE_H
