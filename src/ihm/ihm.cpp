@@ -1,30 +1,21 @@
 #include "ihm.h"
 
-#include "config.h"
-
 #include <SPI.h>
 #include <TFT_eSPI.h>
+#include <qrcode_espi.h>
 #include <PushButton.h>
 
-// enum rotation {
-//   LANDSCAPE,
-//   RIGHT_PORTRAIT,
-//   LEFT_PORTRAIT,
-//   INVERTED_LANDSCAPE
-// };
-
-// uint8_t rotation = LANDSCAPE;
+#include "config.h"
+#include "utils/faker.h"
 
 TFT_eSPI tft = TFT_eSPI();
+QRcode_eSPI qrcode(&tft);
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
 #define FONT_SIZE 2
 
-PushButton bot1(35);
-PushButton bot2(34);
-
-static long corBot[3] = {OFF, OFF, OFF};
+bool hasShow = false;
 
 // 'logo-senai', 160x40px
 const uint16_t bitmap_logo_senai[6400] = {
@@ -430,6 +421,39 @@ const uint16_t bitmap_logo_senai[6400] = {
 	0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8, 0x00a8
 };
 
+String voltage;
+String amperage;
+String power;
+String temperature;
+String status = "Bom";
+String ip = "192.168.4.1";
+String mqttStatus = "Desconectado";
+String datetime = "Jun 5 2025 23:46:20";
+bool hasConnection = false;
+
+void draw_footer() {
+  tft.setTextSize(1);
+  tft.setCursor(10, 220);
+  tft.setTextColor(TFT_CYAN);
+  tft.print("IP: ");
+  tft.setTextColor(TFT_WHITE);
+  tft.println(ip);
+
+  tft.setCursor(10, 230);
+  tft.setTextColor(TFT_CYAN);
+  tft.print("MQTT: ");
+  if (mqttStatus == "Conectado") {
+	tft.setTextColor(TFT_GREEN);
+  } else {
+	tft.setTextColor(TFT_RED);
+  }
+  tft.println(mqttStatus);
+  
+  tft.setCursor(10, 240);
+  tft.setTextColor(TFT_WHITE);
+  tft.println(datetime);
+}
+
 void splash_screen() {
   tft.fillScreen(TFT_BLACK);
   
@@ -442,88 +466,136 @@ void splash_screen() {
   tft.pushImage(x, y, logoWidth, logoHeight, bitmap_logo_senai);
 
   tft.setCursor(10, 130);
-  tft.setTextSize(3);
+  tft.setTextSize(2);
   tft.setTextColor(BLUE);
   tft.println("SENAI MECATRONICA");
   
   tft.setCursor(50, 180);
-  tft.setTextSize(4);
+  tft.setTextSize(2);
   tft.setTextColor(RED);
-  tft.println("Projeto X");
+  tft.println("Projeto Zyron");
   
   delay(3500);
 
   tft.fillScreen(BLACK);
+
+  hasConnection ? screenShowing = MAIN : screenShowing = QRCODE;
 }
 
-void draw_buttons(int type) {
-  switch (type) {
-    case 1:
-      tft.fillRect(40, 20 , 160, 80, corBot[0]);
-
-      tft.setTextColor(BLACK);
-      tft.setTextSize (3);
-      tft.setCursor(50, 50);
-      tft.println(" QUARTO");
-      break;
-
-    case 2:
-      tft.fillRect(40, 120, 160, 80, corBot[1]);
-
-      tft.setTextColor(BLACK);
-      tft.setTextSize (3);
-      tft.setCursor(50, 150);
-      tft.println("  SALA ");
-      break;
-
-    default:
-      tft.fillRect(40, 20 , 160, 80, corBot[0]);
-      tft.fillRect(40, 120, 160, 80, corBot[1]);
-
-      tft.setTextColor(BLACK);
-      tft.setTextSize (3);
-
-      tft.setCursor(50, 50);
-      tft.println(" QUARTO");
-
-      tft.setCursor(50, 150);
-      tft.println("  SALA ");
-
-  }
-
+void qrcode_screen() {
+	qrcode.create(ip);
 }
 
-void detect_buttons() {
-  const char* TAG = "detect_buttons";
+void main_screen() {
+  voltage = String(getRandomVoltage());
+  amperage = String(getRandomAmperage());
+  power = String(getRandomPower());
+  temperature = String(getRandomTemperature());
+  mqttStatus = random(0, 2) == 0 ? "Conectado" : "Desconectado";
 
-  if (bot1.pressed()) { // LOGICA PARA O BOTAO 1
-    logger.info(TAG, "Button 1 pressionado");
-    if (corBot[0] == ON) corBot[0] = OFF;
-    else corBot[0] = ON;
-    draw_buttons(1);
-  } 
-  
-  if (bot2.pressed()) { // LOGICA PARA O BOTAO 2
-    logger.info(TAG, "Button 2 pressionado");
-    if (corBot[1] == ON) corBot[1] = OFF;
-    else corBot[1] = ON;
-    draw_buttons(2);
-  }
+  tft.fillScreen(TFT_BLACK);
+
+  // Cabeçalho
+  tft.setTextColor(TFT_GREEN);
+  tft.setTextSize(3);
+  tft.setCursor(5, 10);
+  tft.println("MONITOR ZYRON");
+
+  // Estado
+  tft.setCursor(10, 60);
+  tft.setTextSize(2);
+  tft.setTextColor(TFT_WHITE);
+  tft.print("ESTADO:");
+  tft.setTextColor(TFT_YELLOW);
+  tft.setCursor(120, 60);
+  tft.println(status);
+
+  // Tensão
+  tft.setCursor(10, 90);
+  tft.setTextSize(2);
+  tft.setTextColor(TFT_WHITE);
+  tft.print("VOLTAGEM:");
+  tft.setTextColor(TFT_YELLOW);
+  tft.setCursor(120, 90);
+  tft.println(voltage + " V");
+
+  // Corrente
+  tft.setCursor(10, 120);
+  tft.setTextSize(2);
+  tft.setTextColor(TFT_WHITE);
+  tft.print("CORRENTE:");
+  tft.setTextColor(TFT_RED);
+  tft.setCursor(120, 120);
+  tft.println(amperage + " A");
+
+  // Potência
+  tft.setCursor(10, 150);
+  tft.setTextSize(2);
+  tft.setTextColor(TFT_WHITE);
+  tft.print("POTENCIA:");
+  tft.setTextColor(TFT_MAGENTA);
+  tft.setCursor(120, 150);
+  tft.println(power + " W");
+
+  // Temperatura
+  tft.setCursor(10, 180);
+  tft.setTextSize(2);
+  tft.setTextColor(TFT_WHITE);
+  tft.print("TEMPER:");
+  tft.setCursor(120, 180);
+  tft.setTextColor(TFT_CYAN);
+  tft.println(temperature + " C");
+
+  // Rodapé 
+  draw_footer();
 }
+
+
 
 void ihm_init(){
   const char* TAG = "ihm_init";
   logger.info(TAG, "Inicializando a IHM...");
   
   tft.init();
-  tft.setRotation(3); // 0-3
-
+  tft.setRotation(2); // 0-3
+  qrcode.init();
+  
   splash_screen();
-  draw_buttons(0);
+//   draw_buttons(0);
+//   main_screen();
 
   logger.info(TAG, "IHM inicializado.");
 }
 
 void ihm_loop(){
-  detect_buttons();
+
+  switch (screenShowing) {
+  case MAIN:
+	if (!hasShow) {
+		main_screen();
+		hasShow = true;
+	}
+	if (!hasConnection) {
+		screenShowing = QRCODE;
+		hasShow = false;
+  	}
+	break;
+  
+  case QRCODE:
+    if (!hasShow) {
+		qrcode_screen();
+		hasShow = true;
+	}
+  	if (hasConnection) {
+		screenShowing = MAIN;
+		hasShow= false;
+  	}
+
+	break;
+  
+  default:
+	break;
+  }
+
+//   delay(3000);
 }
