@@ -6,6 +6,8 @@
 #include "storage/storage.h"
 #include "ihm/ihm.h"
 
+#include "utils/faker.h"
+
 #include "config.h"
 
 Logger logger;
@@ -26,6 +28,9 @@ void setup() {
     logger.warn(TAG, "Este é um aviso.");
     logger.error(TAG, "Erro de inicialização!");
 
+    //load fake data
+    randomSeed(analogRead(0));
+
     // Inicializa Armazenamento
     list_partitions();
     storage_init();
@@ -35,7 +40,7 @@ void setup() {
       logger.infof(TAG, "SSID: %s", config.ssid);
       logger.infof(TAG, "MQTT: %s", config.server_mqtt_url);
     } else {
-      Serial.println("Falha ao carregar configuração.");
+      logger.error(TAG, "Falha ao carregar configuração.");
     }
 
     // Inicia Wi-Fi apos servico rest completar inicialização
