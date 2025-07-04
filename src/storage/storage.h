@@ -23,6 +23,7 @@ void list_partitions();
 void storage_init();
 bool storage_load_config(Config &config);
 bool storage_save_config(Config &config);
+bool storage_save_wifi(String &ssid, String &password);
 void storage_clear();
 
 #endif // STORAGE_H

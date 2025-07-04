@@ -55,6 +55,63 @@ bool storage_load_config(Config &config) {
   return true;
 }
 
+bool storage_save_wifi(String &ssid, String &password) {
+  const char* TAG = "storage_save_wifi";
+
+  File file = FILESYSTEM.open(CONFIG_FILE, "w");
+  if (!file) {
+    logger.error(TAG, "Erro ao abrir configs.json para escrita");
+    return false;
+  }
+
+  StaticJsonDocument<512> doc;
+
+  JsonObject network = doc.createNestedObject("network");
+  network["ssid"] = ssid;
+  network["password"] = password;
+
+  if (serializeJson(doc, file) == 0) {
+    logger.error(TAG, "Falha ao salvar o JSON no arquivo");
+    file.close();
+    return false;
+  }
+
+  file.close();
+  return true;
+}
+
+bool storage_save_cloud(const Config &config) {
+  const char* TAG = "storage_save_cloud";
+
+  File file = FILESYSTEM.open(CONFIG_FILE, "w");
+  if (!file) {
+    logger.error(TAG, "Erro ao abrir configs.json para escrita");
+    return false;
+  }
+
+  StaticJsonDocument<512> doc;
+
+  doc["device_id"] = config.device_id;
+
+  JsonObject cloud = doc.createNestedObject("cloud");
+  cloud["server_http_url"] = config.server_http_url;
+  cloud["server_mqtt_url"] = config.server_mqtt_url;
+  cloud["api_key"] = config.api_key;
+
+  JsonObject data_reporting = doc.createNestedObject("data_reporting");
+  data_reporting["interval_ms"] = config.interval_ms;
+  data_reporting["format"] = config.format;
+
+  if (serializeJson(doc, file) == 0) {
+    logger.error(TAG, "Falha ao salvar o JSON no arquivo");
+    file.close();
+    return false;
+  }
+
+  file.close();
+  return true;
+}
+
 bool storage_save_config(const Config &config) {
   const char* TAG = "storage_save_config";
 

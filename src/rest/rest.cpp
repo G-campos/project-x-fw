@@ -34,17 +34,18 @@ void handleRoot() {
     File file = FILESYSTEM.open("/index.html", "r");
     if (!file) {
         logger.error(TAG,"Arquivo /index.html não encontrado no SPIFFS!");
-        server.send(404, "text/plain", "index.html não encontrado");
+        server.send(404, "text/plain", "File not found");
         return;
     }
     logger.debugf(TAG, "Arquivo index.html aberto. Tamanho: %d bytes", file.size());
 
     logger.info(TAG,"Enviando /index.html");
 
-    size_t sent = server.streamFile(file, getContentType(file.name()));
-    file.close();
+    // server.streamFile(file, getContentType(file.name()));
+    // file.close();
 
-    // server.send(200, getContentType(file.name()), "/index.html");
+    server.send(200, getContentType(file.name()), "/index.html");
+    file.close();
 }
 
 void handleWifiConfig() {
@@ -71,9 +72,8 @@ void handleWifiConfig() {
 
     if (ssid.length() > 0 && password.length() > 0) {
         logger.info(TAG,"Credenciais válidas, tentando conectar...");
-        storage_save_wifi(ssid.c_str(), password.c_str());
+        storage_save_wifi(ssid, password);
         server.send(200, "application/json", "{\"status\":\"Conectando...\"}");
-        ESP.restart();
     } else {
         logger.error(TAG,"SSID ou senha ausentes");
         server.send(400, "application/json", "{\"error\":\"SSID e senha obrigatórios\"}");
