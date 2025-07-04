@@ -1,7 +1,7 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[Projeto X UI.eez-project]:/userPages/2",
-    "selectedGlobalVariableObject": "[Projeto X UI.eez-project]:/variables/globalVariables/0",
+    "selectedUserPageObject": "[Projeto X UI.eez-project]:/userPages/1",
+    "selectedGlobalVariableObject": "[Projeto X UI.eez-project]:/variables/globalVariables/3",
     "selectedThemeObject": "[Projeto X UI.eez-project]:/themes/1",
     "selectedBitmapObject": "[Projeto X UI.eez-project]:/bitmaps/1",
     "subnavigationSelectedItems": {
@@ -26,7 +26,8 @@
           },
           {
             "type": "border",
-            "size": 467.5,
+            "selected": 0,
+            "size": 483.5,
             "location": "right",
             "children": [
               {
@@ -156,7 +157,7 @@
                 {
                   "type": "tabset",
                   "id": "#3619d71e-dd00-4cfe-a7ba-db946b455b99",
-                  "weight": 1,
+                  "weight": 1.1867364746945899,
                   "enableClose": false,
                   "children": [
                     {
@@ -172,7 +173,7 @@
                 {
                   "type": "tabset",
                   "id": "#13e51cb7-8d0d-4d38-9372-951edcd2efb9",
-                  "weight": 1,
+                  "weight": 0.8132635253054101,
                   "enableClose": false,
                   "children": [
                     {
@@ -190,14 +191,36 @@
             {
               "type": "tabset",
               "id": "EDITORS",
-              "weight": 55.003554368260424,
+              "weight": 42.26893515193886,
               "selected": 1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
                 {
                   "type": "tab",
-                  "id": "#052e52b4-5836-42e1-8832-03db6bcbbad9",
+                  "id": "#22e60792-987c-4468-9b9d-aaa919d5a23f",
+                  "name": "SplashScreen",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[Projeto X UI.eez-project]:/userPages/0",
+                    "permanent": false
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#2b1f8625-5576-4b67-bc4e-0fa33d3be15e",
+                  "name": "MainScreen",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[Projeto X UI.eez-project]:/userPages/1",
+                    "permanent": true
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#d84273cb-1952-42a0-a873-46070d4405bc",
                   "name": "Settings",
                   "component": "editor",
                   "config": {
@@ -206,17 +229,6 @@
                     "permanent": false
                   },
                   "icon": "material:settings"
-                },
-                {
-                  "type": "tab",
-                  "id": "#bb6b6fb7-6bfc-43b1-8ee2-9dc82fa0d7e3",
-                  "name": "HomeScreen",
-                  "component": "editor",
-                  "config": {
-                    "objectPath": "[Projeto X UI.eez-project]:/userPages/2",
-                    "permanent": false
-                  },
-                  "icon": "svg:page"
                 }
               ],
               "active": true
@@ -224,7 +236,7 @@
             {
               "type": "row",
               "id": "#b2d283a0-d5d9-4eb6-9be2-11d8a7af1953",
-              "weight": 20.7791205391206,
+              "weight": 33.51373975544219,
               "children": [
                 {
                   "type": "tabset",
@@ -1072,15 +1084,14 @@
     },
     "[Projeto X UI.eez-project]:/userPages/0[flow-state]": {
       "selection": {
-        "0": {},
-        "1": {}
+        "0": {}
       },
       "transform": {
         "translate": {
-          "x": -89.70525789260864,
-          "y": -327.3694734573364
+          "x": -250,
+          "y": -347
         },
-        "scale": 1
+        "scale": 2
       },
       "timeline": {
         "isEditorActive": false,
@@ -1091,14 +1102,28 @@
     },
     "[Projeto X UI.eez-project]:/userPages/1[flow-state]": {
       "selection": {
-        "0": {}
+        "0": {
+          "0": {
+            "0": {},
+            "1": {
+              "0": {},
+              "2": {},
+              "3": {}
+            },
+            "2": {
+              "0": {},
+              "1": {},
+              "2": {}
+            }
+          }
+        }
       },
       "transform": {
         "translate": {
-          "x": -234,
-          "y": -339.36737084388733
+          "x": -221,
+          "y": -357
         },
-        "scale": 1
+        "scale": 2
       },
       "timeline": {
         "isEditorActive": false,
@@ -1147,6 +1172,22 @@
         "secondToPx": 200,
         "scrollLeft": 0
       }
+    },
+    "[Projeto X UI.eez-project]:/userPages/4[flow-state]": {
+      "selection": {},
+      "transform": {
+        "translate": {
+          "x": -120,
+          "y": -160
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
     }
   },
   "activeOutputSection": 0,
@@ -1162,12 +1203,16 @@
   "logsPanelFilter": "all",
   "selectedStylePropertyName": "",
   "lvglPart": "MAIN",
-  "lvglState": "FOCUSED",
+  "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "PADDING"
+    "BACKGROUND",
+    "BORDER",
+    "OUTLINE",
+    "SHADOW",
+    "MISCELLANEOUS"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
-  "flowZoom": 1,
+  "flowZoom": 2,
   "implementationLanguage": "C++"
 }
