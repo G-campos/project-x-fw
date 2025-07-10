@@ -27,7 +27,7 @@
           {
             "type": "border",
             "selected": 0,
-            "size": 483.5,
+            "size": 192.5,
             "location": "right",
             "children": [
               {
@@ -125,7 +125,7 @@
                 {
                   "type": "tabset",
                   "id": "#26052ca5-a4ea-44f8-9907-0870dee2c029",
-                  "weight": 1,
+                  "weight": 0.5449375240452972,
                   "enableClose": false,
                   "children": [
                     {
@@ -157,7 +157,7 @@
                 {
                   "type": "tabset",
                   "id": "#3619d71e-dd00-4cfe-a7ba-db946b455b99",
-                  "weight": 1.1867364746945899,
+                  "weight": 1.641798950649293,
                   "enableClose": false,
                   "children": [
                     {
@@ -1107,8 +1107,10 @@
             "0": {},
             "1": {
               "0": {},
+              "1": {},
               "2": {},
-              "3": {}
+              "3": {},
+              "4": {}
             },
             "2": {
               "0": {},
@@ -1121,7 +1123,7 @@
       "transform": {
         "translate": {
           "x": -221,
-          "y": -357
+          "y": -237
         },
         "scale": 2
       },
@@ -1205,11 +1207,8 @@
   "lvglPart": "MAIN",
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "BACKGROUND",
-    "BORDER",
-    "OUTLINE",
-    "SHADOW",
-    "MISCELLANEOUS"
+    "MISCELLANEOUS",
+    "BACKGROUND"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
