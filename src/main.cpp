@@ -12,8 +12,7 @@
 
 Logger logger;
 Config config;
-
-bool restStarted = false;
+Engine motor;
 
 void setup() {
     const char* TAG = "setup";
@@ -38,25 +37,34 @@ void setup() {
     if (storage_load_config(config)) {
       logger.info(TAG, "Configuração carregada:");
       logger.infof(TAG, "SSID: %s", config.ssid);
-      logger.infof(TAG, "MQTT: %s", config.server_mqtt_url);
+      // logger.infof(TAG, "MQTT: %s", config.server_mqtt_url);
     } else {
       logger.error(TAG, "Falha ao carregar configuração.");
     }
 
-    // Inicia Wi-Fi apos servico rest completar inicialização
+    // Inicializa o controle do motor
+    motor.begin();
+    // valores base
+    motor.setMinSpeed(30); 
+    motor.setMultiSpeed1(60);
+    motor.setMultiSpeed2(90);
+
+    // Inicializa servicos Wi-Fi
     wifi_init();
     
-    // Inicializa servidor REST para configuração
-    rest_init();
+    // Inicializa servico REST para configuração
+    // rest_init();
 
     // Inicializa a ihm
     ihm_init();
   }
   
 void loop() {
+  motor.loop();
+
   wifi_loop();
 
-  rest_loop();
+  // rest_loop();
 
   ihm_loop();
 }
