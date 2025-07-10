@@ -7,16 +7,17 @@
 
 #define FILESYSTEM SPIFFS
 #define CONFIG_FILE "/configs.json"
+#define WIFI_FILE "/wifi.json"
 
 struct Config {
-  String device_id;
   String ssid;
   String password;
-  String server_http_url;
-  String server_mqtt_url;
-  String api_key;
-  uint32_t interval_ms;
-  String format;
+  // String device_id;
+  // String server_http_url;
+  // String server_mqtt_url;
+  // String api_key;
+  // uint32_t interval_ms;
+  // String format;
 };
 
 void list_partitions();
