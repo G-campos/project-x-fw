@@ -6,12 +6,10 @@
 #include <WiFi.h>
 #endif
 
-#include "storage/storage.h"
-#include "mqtt/mqtt.h"
 #include "config.h"
-
-// WIFI config
-#define AP_SSID "ESP-CONFIG"
+#include "ntp/ntp.h"
+#include "mqtt/mqtt.h"
+#include "storage/storage.h"
 
 enum WifiState {
     WIFI_NOT_STARTED,
@@ -19,11 +17,14 @@ enum WifiState {
     WIFI_CONNECTED,
     WIFI_AP_MODE
 };
-
 WifiState wifiState = WIFI_NOT_STARTED;
+
 String ssid, password;
+
 unsigned long connectionStartTime = 0;
 bool credentialsLoaded = false;
+
+unsigned long lastConnection = 0;
 
 DynamicJsonDocument list_wifi_ssid() {
     const char* TAG = "list_wifi_ssid";
@@ -57,15 +58,17 @@ void wifi_connect_start(const char* ssid, const char* password) {
 void wifi_init() {
     const char* TAG = "wifi_init";
 
-    if (storage_load_config(config)) {
+    // if (storage_load_config(config)) {
         credentialsLoaded = true;
-        wifi_connect_start(config.ssid.c_str(), config.password.c_str());
+        // wifi_connect_start(config.ssid.c_str(), config.password.c_str());
+        wifi_connect_start("SCD", "123456789");
         wifiState = WIFI_CONNECTING;
-    } else {
-        logger.warn(TAG, "Nenhuma credencial salva. Iniciando AP.");
-        WiFi.softAP(AP_SSID, NULL);
-        wifiState = WIFI_AP_MODE;
-    }
+    // }
+    // } else {
+    //     logger.warn(TAG, "Nenhuma credencial salva. Iniciando AP.");
+    //     WiFi.softAP(AP_SSID, NULL);
+    //     wifiState = WIFI_AP_MODE;
+    // }
 }
 
 void wifi_connecting() {
@@ -77,6 +80,7 @@ void wifi_connecting() {
         wifiState = WIFI_CONNECTED;
         WiFi.softAPdisconnect(true);
         mqtt_init();
+
     } else if (millis() - connectionStartTime > WIFI_TIMEOUT) {
         logger.error(TAG, "Falha ao conectar. Iniciando AP.");
         WiFi.disconnect(true);
@@ -86,6 +90,14 @@ void wifi_connecting() {
     }
 }
 
+String getIp() {
+    return wifiState == WIFI_CONNECTED ? String(WiFi.localIP().toString().c_str()) : String(WiFi.softAPIP().toString().c_str());
+}
+
+bool getConnectionStatus() {
+    return wifiState == WIFI_CONNECTED ? true : false ;
+}
+
 void wifi_connected() {
     const char* TAG = "wifi_connected";
 
@@ -93,6 +105,14 @@ void wifi_connected() {
         logger.warn(TAG, "Conexão Wi-Fi perdida. Tentando reconectar...");
         wifiState = WIFI_CONNECTING;
         wifi_connect_start(config.ssid.c_str(), config.password.c_str());
+    } else {
+        mqtt_loop();
+        
+        if (millis() - lastConnection > 5000) {
+            ntpInit();
+            lastConnection = millis();
+        }
+
     }
 }
 
