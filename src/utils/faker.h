@@ -3,12 +3,15 @@
 
 #include <Arduino.h>
 
-float  getRandomPower();
-float  getRandomVoltage();
-float  getRandomAmperage();
-float  getRandomEnergy();
-float  getRandomTemperature();
+int  getRandomPower();
+int  getRandomVoltage();
+int  getRandomAmperage();
+int  getRandomEnergy();
+int  getRandomTemperature();
+int  getRandomSpeed();
 int    getRandomSignalIntensity();
+String getRandomWifiStatus();
+String getRandomMqttStatus();
 String getRandomDirectionRotation();
 
 #endif // FAKER_H
