@@ -5,10 +5,12 @@
 #include "config.h"
 
 #include "utils/faker.h"
+// #include "gpio/engine.h"
 
-const char* mqtt_server = ""; 
+// ThingsBoard server (use local IP)
+const char* mqtt_server = "192.168.145.233"; // Change to your actual IP
 const int mqtt_port = 1883;
-const char* token = "";  // From ThingsBoard device
+const char* token = "9o39982aeiqn4vs8quf1";  // From ThingsBoard device
 
 // Variáveis globais
 WiFiClient wifiClient;
@@ -16,7 +18,12 @@ PubSubClient client(wifiClient);              // agora compartilhada entre as fu
 unsigned long lastSend = 0;
 
 void mqtt_init() {
+  logger.info("mqtt_init", "Inicializando mqtt client...");
   client.setServer(mqtt_server, mqtt_port);
+}
+
+String mqttConnectionStatus() {
+  return client.connected() ? "CONECTADO" : "DEDSCONECTADO";
 }
 
 void mqtt_reconnect() {

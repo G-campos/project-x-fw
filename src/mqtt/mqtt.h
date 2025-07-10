@@ -9,5 +9,6 @@ void mqtt_init();
 void mqtt_reconnect();
 void mqtt_loop();
 void sendTelemetry();
+String mqttConnectionStatus();
 
 #endif // MQTT_H
