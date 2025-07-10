@@ -10,7 +10,7 @@ enum Screen {
 	MENU
 };
 
-enum Screen screenShowing = SPLASH;
+extern Screen screenShowing;
 
 void ihm_init();
 void ihm_loop();
