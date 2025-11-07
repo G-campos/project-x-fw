@@ -10,7 +10,7 @@
 // ThingsBoard server (use local IP)
 const char* mqtt_server = "192.168.145.233"; // Change to your actual IP
 const int mqtt_port = 1883;
-const char* token = "9o39982aeiqn4vs8quf1";  // From ThingsBoard device
+const char* token = "";  // From ThingsBoard device
 
 // Variáveis globais
 WiFiClient wifiClient;
