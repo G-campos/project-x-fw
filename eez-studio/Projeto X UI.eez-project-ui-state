@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[Projeto X UI.eez-project]:/userPages/1",
+    "selectedUserPageObject": "[Projeto X UI.eez-project]:/userPages/2",
     "selectedGlobalVariableObject": "[Projeto X UI.eez-project]:/variables/globalVariables/3",
     "selectedThemeObject": "[Projeto X UI.eez-project]:/themes/1",
     "selectedBitmapObject": "[Projeto X UI.eez-project]:/bitmaps/1",
@@ -192,17 +192,16 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 42.26893515193886,
-              "selected": 1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
                 {
                   "type": "tab",
                   "id": "#22e60792-987c-4468-9b9d-aaa919d5a23f",
-                  "name": "SplashScreen",
+                  "name": "MenuScreen",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[Projeto X UI.eez-project]:/userPages/0",
+                    "objectPath": "[Projeto X UI.eez-project]:/userPages/2",
                     "permanent": false
                   },
                   "icon": "svg:page"
@@ -1088,10 +1087,10 @@
       },
       "transform": {
         "translate": {
-          "x": -250,
-          "y": -347
+          "x": -282.5,
+          "y": -325.625
         },
-        "scale": 2
+        "scale": 1.5
       },
       "timeline": {
         "isEditorActive": false,
@@ -1110,7 +1109,10 @@
               "1": {},
               "2": {},
               "3": {},
-              "4": {}
+              "4": {},
+              "5": {},
+              "6": {},
+              "7": {}
             },
             "2": {
               "0": {},
@@ -1122,10 +1124,10 @@
       },
       "transform": {
         "translate": {
-          "x": -221,
-          "y": -237
+          "x": -150,
+          "y": -330
         },
-        "scale": 2
+        "scale": 1.5
       },
       "timeline": {
         "isEditorActive": false,
@@ -1145,10 +1147,10 @@
       },
       "transform": {
         "translate": {
-          "x": -298.3821048736574,
-          "y": -313.27184200286854
+          "x": -288.3821048736574,
+          "y": -344.27184200286854
         },
-        "scale": 1
+        "scale": 1.5
       },
       "timeline": {
         "isEditorActive": false,
@@ -1208,10 +1210,13 @@
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
     "MISCELLANEOUS",
-    "BACKGROUND"
+    "TEXT",
+    "LAYOUT",
+    "BACKGROUND",
+    "LINE"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
-  "flowZoom": 2,
+  "flowZoom": 1.5,
   "implementationLanguage": "C++"
 }
